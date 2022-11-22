@@ -16,9 +16,10 @@ private:
 
     StackNode<type> * start;
     StackNode<type> * end;
-    int size;
 
 public:
+    int size;
+
     StackList() {
         start = new StackNode<type>();
         end = start;
@@ -38,7 +39,6 @@ public:
 
         }
         end = temp;
-        temp = start;
     }
     void PrintStack() {
         StackNode<type>* temp = start;
@@ -48,16 +48,14 @@ public:
 
         }
     }
-    void PushStart(type value) {
-        StackNode<type>* temp = new StackNode<type>(value);
-        temp->next = start;
-        start = temp;
-    }
+
     void PushEnd(type value) {
+        size++;
         end->next = new StackNode<type>(value);
         end = end->next;
     }
     type PopEnd() {
+        size--;
         StackNode<type>* temp = start;//traverse until next = end;
         while (temp->next != end) {
             temp = temp->next;
@@ -69,12 +67,18 @@ public:
         return end->value;
     }
     //start functions
+    void PushStart(type value) {
+        size++;
+        StackNode<type>* temp = new StackNode<type>(value);
+        temp->next = start;
+        start = temp;
+    }
     type PopStart(void) {
         //i could free start? 
         
         StackNode<type>* temp = start->next;
         free(start);
-
+        size--;
         start = temp;
         return start->value;
     }
