@@ -13,55 +13,93 @@ private:
         StackNode(type value) : next(NULL), value(value) {};
         StackNode(type value, StackNode<type>* next) :next(next), value(value) {};
     };
-
-    StackNode<type> * start;
-    StackNode<type> * end;
+    typedef StackNode<type> _StackNode;
+    _StackNode* start;
+    _StackNode * end;
+    size_t size;
 
 public:
-    int size;
 
     StackList() {
-        start = new StackNode<type>();
+        start = new _StackNode();
         end = start;
         size = 1;
     }
     StackList(initialser values) {
 
         size = values.size();
-        start = new StackNode<type>( * (values.begin() ));
+        start = new _StackNode( * (values.begin() ));
         
-        StackNode<type>* temp = start;
+        _StackNode* temp = start;
 
         for (int x = 1; x < size; x++) {
             //std::cout << temp->value;
-            temp->next = new StackNode<type>(*(values.begin() + x));
+            temp->next = new _StackNode(*(values.begin() + x));
             temp = temp->next;
 
         }
         end = temp;
     }
+    //misc functions
+
+    int GetSize() {
+        return size;
+    }
+
+    void RemoveElem(size_t index) {//this function works in all cases
+        if (index > size) {
+            throw (std::out_of_range("indexing past length of stack\n"));
+            exit(-1);
+
+        }
+        size--;
+        _StackNode* temp = start;
+        for (int x = 0; x < index - 2; x++) {
+            temp = temp->next;
+        }
+        if (temp == start) {
+            PopStart();
+            return;
+        }
+        else if (temp == end) {
+            PopEnd();
+            return;
+        }
+        _StackNode* ptr =  temp->next;
+        temp->next = temp->next->next;
+        free(ptr);
+    }
+    void ShiftLeft() {
+        //start = end , second = start , 
+        _StackNode* temp = start;
+        start = start->next;
+        temp->next = NULL;
+        end->next = temp;
+        end = end->next;
+    }
     void PrintStack() {
-        StackNode<type>* temp = start;
+        _StackNode* temp = start;
         while (temp != NULL) {
             std::cout << temp->value << std::endl;
             temp = temp->next;
 
         }
     }
-
+    //end functions
     void PushEnd(type value) {
         size++;
-        end->next = new StackNode<type>(value);
+        end->next = new _StackNode(value);
         end = end->next;
     }
     type PopEnd() {
         size--;
-        StackNode<type>* temp = start;//traverse until next = end;
+        _StackNode* temp = start;//traverse until next = end;
         while (temp->next != end) {
             temp = temp->next;
         }
         free(temp->next);//free end;
         end = temp;
+        return end->value;
     }
     type& GetEnd() {
         return end->value;
@@ -69,18 +107,19 @@ public:
     //start functions
     void PushStart(type value) {
         size++;
-        StackNode<type>* temp = new StackNode<type>(value);
+        _StackNode* temp = new _StackNode(value);
         temp->next = start;
         start = temp;
     }
     type PopStart(void) {
         //i could free start? 
         
-        StackNode<type>* temp = start->next;
+        _StackNode* temp = start->next;
+        int tem = start->value;
         free(start);
         size--;
         start = temp;
-        return start->value;
+        return tem;
     }
     type& GetStart(void) {
         return start->value;
@@ -92,7 +131,7 @@ public:
             exit(-1);
 
         }
-        StackNode<type>* temp = start;
+        _StackNode* temp = start;
         for (int x = 0; x < index-1; x++) {//probably something slightly wrong with this but idgaf 
             temp = temp->next;
         }

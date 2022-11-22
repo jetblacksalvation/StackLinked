@@ -10,7 +10,13 @@ int main()
 {
     StackList<int> bruh({10,1,5});
     bruh.PrintStack();
-    bruh[3] = 25;
-    std::cout<<bruh[3];
-    std::cout << "Hello World!\n";
+    //std::cout<<bruh[3];
+    bruh.PushEnd(11);
+    std::cout << "-----------\n";
+
+    bruh.RemoveElem(2);
+    std::cout << "-----------\n";
+
+    bruh.PrintStack();
+    // std::cout << "Hello World!\n";
 }
